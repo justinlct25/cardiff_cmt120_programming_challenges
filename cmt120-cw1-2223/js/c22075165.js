@@ -118,7 +118,7 @@ module.exports = {
         for (char of s) this.COUNTS[char] = this.COUNTS[char] + 1 || 1;
         let count = 0;
         for (word of this.WORDS)
-            if (this.ISINCLUDED(word, JSON.parse(JSON.stringify(this.COUNTS)))) count++;
+            if (this.ISINCLUDED(word, {...this.COUNTS })) count++;
         return count;
     },
 
@@ -135,48 +135,41 @@ module.exports = {
     // Exercise 10 - One Step of Wordle
     exercise10: (green, yellow, gray) => {
         this.WORDS = fs.readFileSync("test_data/wordle.txt", "utf-8").split("\n");
-        this.CAL_WORDLE_SET = (green, yellow, gray) => {
-            let words = [...this.WORDS];
+        this.CAL_WORDLE_SET = (words, green, yellow, gray) => {
             gray.forEach((char) => words = words.filter(word => !word.includes(char)));
             for (char in yellow) yellow[char].forEach((idx) => words = words.filter(word => word.charAt(idx) != char && word.includes(char)));
             for (let i = 0; i < 5; i++)
                 if (green[i]) words = words.filter(word => word.charAt(i) == green[i])
             return words;
         }
-        let updated_config = {};
-        let first_set = this.CAL_WORDLE_SET(green, yellow, gray);
+        let updated_config = word_scores = {};
+        let first_set = this.CAL_WORDLE_SET(this.WORDS, green, yellow, gray);
+        let lowest_scores = Number.MAX_VALUE;
         for (const target_word_idx in first_set) { // loop through all the words to calculate scores
             let scores = 0;
-            for (let other_word_idx = 0; other_word_idx < first_set.length; other_word_idx++) { // loop through the other words
+            for (const other_word_idx in first_set) { // loop through the other words
                 if (other_word_idx != target_word_idx) { // not the word to be calculated for scores
+                    updated_config = { green: {}, yellow: {}, gray: new Set() };
                     for (const letter_idx in first_set[target_word_idx]) { // loop througgh every letter of the target word
-                        updated_config = { green: {...green }, yellow: {...yellow }, gray: new Set(gray) }
                         const current_letter = first_set[target_word_idx][letter_idx],
                             other_word = first_set[other_word_idx];
-                        if (current_letter == other_word[letter_idx]) {
+                        if (current_letter == other_word[letter_idx]) { // check hypothetical correct letter
                             updated_config.green[letter_idx.toString()] = current_letter;
-                        } else if (other_word.includes(current_letter)) {
+                        } else if (other_word.includes(current_letter)) { // check hypothetical included letter
                             if (updated_config.yellow[current_letter]) updated_config.yellow[current_letter].add(Number(letter_idx));
-                            else updated_config.yellow[current_letter] = new Set([letter_idx]);
-                        } else if (!other_word.includes(current_letter)) {
+                            else updated_config.yellow[current_letter] = new Set([Number(letter_idx)]);
+                        } else if (!other_word.includes(current_letter)) { // check hypothetical non-exist letter
                             updated_config.gray.add(current_letter);
                         }
-                        let sub_wordle = this.CAL_WORDLE_SET(updated_config.green, updated_config.yellow, updated_config.gray);
-                        console.log(sub_wordle);
-                        scores += sub_wordle.length;
                     }
+                    let second_set = this.CAL_WORDLE_SET(first_set, updated_config.green, updated_config.yellow, updated_config.gray);
+                    scores += second_set.length;
                 }
             }
-            console.log(scores);
+            if (scores < lowest_scores) lowest_scores = scores;
+            if (word_scores[scores]) word_scores[scores].push(first_set[target_word_idx]);
+            else word_scores[scores] = [first_set[target_word_idx]];
         }
-        // for (const word_idx of first_set) {
-        //     let scores = 0;
-
-        //     for (const letter_idx in word) {
-        //         updated_config = {green: {...green}, yellow: {...yellow}, gray: new Set(gray)};
-
-        //     }
-        // }
-        return undefined;
+        return new Set(word_scores[lowest_scores]);
     },
 }
