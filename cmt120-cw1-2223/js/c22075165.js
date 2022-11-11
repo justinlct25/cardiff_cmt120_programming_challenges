@@ -62,11 +62,11 @@ module.exports = {
         const data = fs.readFileSync(filename, "utf8");
         let count = { "letters": 0, "numbers": 0, "symbols": 0, "words": 0, "sentences": 0, "paragraphs": 0, "last_line_len": 0 };
         data.split("\n").forEach((line) => {
-            if (line.length > 0) {
-                if (count.last_line_len == 0) count.paragraphs++;
-                line.split(" ").forEach((word) => {
-                    word.split(/[^A-Za-z0-9]/).forEach((subword) => { if (subword.length >= 1 && (this.is_number(subword[0]) || this.is_letter(subword[0]))) count.words++; })
-                    word.split("").forEach((char) => {
+            if (line.length > 0) { // only doing operations when line is not empty
+                if (count.last_line_len == 0) count.paragraphs++; // if the last line is empty and this one is not, then it would be the new paragraph
+                line.split(" ").forEach((word) => { // splitting as word list by spaces
+                    word.split(/[^A-Za-z0-9]/).forEach((subword) => { if (subword.length >= 1 && (this.is_number(subword[0]) || this.is_letter(subword[0]))) count.words++; }) // split for sub-words eg. C-3P , 7-seas)
+                    word.split("").forEach((char) => { // counting for numbers, letters & symbols by looping through each character
                         if (char == "." || char == "?" || char == "!") count.sentences++;
                         if (this.is_number(char)) count.numbers++;
                         else if (this.is_letter(char)) count.letters++;
