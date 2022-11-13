@@ -81,10 +81,10 @@ const gray_4 = new Set(['g', 'o', 'u', 'p', 'c', 'h', 't', 'e'])
 // { input: [green_4, yellow_4, gray_4], output: 1}
 
 
-// console.log(funcsToTest.exercise9(green_1, yellow_1, gray_1))
+console.log(funcsToTest.exercise10(green_2, yellow_2, gray_2))
 
 // funcsToTest.exercise10(green_1, yellow_1, gray_1);
-console.log(funcsToTest.exercise10(green_1, yellow_1, gray_1));
+// console.log(funcsToTest.exercise10(green_1, yellow_1, gray_1));
 
 
 // the set of best words is: {'wince', 'yince', 'mince'}.

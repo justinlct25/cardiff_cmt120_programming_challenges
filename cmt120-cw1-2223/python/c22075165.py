@@ -3,7 +3,7 @@ import math
 
 # Exercise 1 - Iris Species Classifier
 def exercise1(SepalLen,SepalWid,PetalLen,PetalWid):
-    FLOWERS = {"SETOSA":"setosa", "VERSICOLOR":"versicolor", "VIRGINCA":"virginica"};
+    FLOWERS = {"SETOSA":"setosa", "VERSICOLOR":"versicolor", "VIRGINCA":"virginica"}
     if PetalLen < 2.5: return FLOWERS["SETOSA"]
     if PetalWid < 1.8: 
         if PetalLen < 5:
@@ -34,7 +34,7 @@ def exercise3(l):
 
 # Exercise 4 - Finite-State Machine Simulator
 def exercise4(trans,init_state,input_list):
-    output =  []
+    output = []
     for input in input_list:
         result = trans[init_state + "/" + input].split("/")
         init_state = result[0]
@@ -69,20 +69,71 @@ def exercise5(filename):
 
 # Exercise 6 - List Depth
 def exercise6(l):
-    return None
+    max_depth = 0
+    for e in l:
+        if type(e) is list:
+            depth = exercise6(e)
+            if depth > max_depth: max_depth = depth
+    return max_depth + 1
 
 # Exercise 7 - Change, please
 def exercise7(amount,coins):
-    return None
+    COINS = (2, 1, 0.5, 0.2, 0.1, 0.05, 0.02, 0.01)
+    for coin in COINS:
+        if coins == 2:
+            if amount - coin in COINS: return True
+        else: 
+            if exercise7(amount - coin, coins - 1): return True
+    return False
 
 # Exercise 8 - Five Letter Unscramble
 def exercise8(s):
-    return None
+    WORDS =  open("test_data/wordle.txt", mode="r", encoding="utf-8").readlines()
+    def is_included(word, counts):
+        temp = copy.deepcopy(counts)
+        for char in word:
+            if not (char in temp): return False
+            elif not temp[char] > 0: return False
+            temp[char] -= 1
+        return True
+    s_counts, count = dict(), 0
+    for char in s: s_counts[char] = s_counts[char]+1 if char in s_counts else 1
+    for word in WORDS:
+        if is_included(word.strip(), s_counts): count += 1
+    return count
 
 # Exercise 9 - Wordle Set
 def exercise9(green,yellow,gray):
-    return None
+    words = open("test_data/wordle.txt", mode="r", encoding="utf-8").read().splitlines()
+    for char in gray: words = list(filter(lambda word: not char in word, words))
+    for char in yellow:
+        for idx in yellow[char]: words = list(filter(lambda word: not (word[idx] == char) and (char in word), words))
+    for idx in green: words = list(filter(lambda word: word[idx] == green[idx], words))
+    return len(words)
 
 # Exercise 10 - One Step of Wordle
 def exercise10(green,yellow,gray):
-    return None
+    def cal_wordle_set(words, green, yellow, gray):
+        for char in gray: words = list(filter(lambda word: not char in word, words))
+        for char in yellow:
+            for idx in yellow[char]: words = list(filter(lambda word: not (word[idx] == char) and (char in word), words))
+        for idx in green: words = list(filter(lambda word: word[idx] == green[idx], words))
+        return words
+    first_set = open("test_data/wordle.txt", mode="r", encoding="utf-8").readlines()
+    first_set = cal_wordle_set(first_set, green, yellow, gray)
+    updated_config = word_scores = dict()
+    lowest_scores = math.inf 
+    for target_word_idx, target_word in enumerate(first_set):
+        scores = 0
+        for other_word_idx, other_word in enumerate(first_set):
+            if (other_word_idx != target_word_idx):
+                updated_config = {"green":{}, "yellow": {}, "gray": set()}
+                for letter_idx, letter in enumerate(target_word):
+                    if letter == other_word[letter_idx]: updated_config["green"][letter_idx] = letter
+                    elif letter in other_word: updated_config["yellow"].setdefault(letter, []).append(letter_idx)
+                    elif not letter in other_word: updated_config["gray"].add(letter)
+                second_set = cal_wordle_set(first_set, updated_config["green"], updated_config["yellow"], updated_config["gray"])
+                scores += len(second_set)
+        if scores < lowest_scores: lowest_scores = scores
+        word_scores.setdefault(scores, []).append(target_word.strip())
+    return set(word_scores[lowest_scores])

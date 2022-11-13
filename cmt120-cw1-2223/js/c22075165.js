@@ -84,8 +84,8 @@ module.exports = {
         let max_depth = 0;
         l.map((e) => {
             if (Array.isArray(e)) {
-                const count = module.exports.exercise6(e);
-                if (count > max_depth) max_depth = count;
+                const depth = module.exports.exercise6(e);
+                if (depth > max_depth) max_depth = depth;
             }
         })
         return max_depth + 1;
@@ -107,14 +107,14 @@ module.exports = {
     // Exercise 8 - Five Letter Unscramble
     exercise8: (s) => {
         this.WORDS = fs.readFileSync("test_data/wordle.txt", "utf-8").split("\n");
-        this.ISINCLUDED = (word, counts) => {
-            for (char of word) {
+        this.ISINCLUDED = (word, counts) => { // check if word can be scrambled using char appearing counts object
+            for (char of word) { // loop through word being checked
                 if (!counts[char] || counts[char] <= 0) return false;
                 counts[char]--;
             }
             return true;
         }
-        this.COUNTS = {};
+        this.COUNTS = {}; // object for characters apearing counts of s
         for (char of s) this.COUNTS[char] = this.COUNTS[char] + 1 || 1;
         let count = 0;
         for (word of this.WORDS)
@@ -126,9 +126,8 @@ module.exports = {
     exercise9: (green, yellow, gray) => {
         let words = fs.readFileSync("test_data/wordle.txt", "utf-8").split("\n");
         gray.forEach((char) => words = words.filter(word => !word.includes(char)));
-        for (char in yellow) yellow[char].forEach((idx) => words = words.filter(word => word.charAt(idx) != char && word.includes(char)));
-        for (let i = 0; i < 5; i++)
-            if (green[i]) words = words.filter(word => word.charAt(i) == green[i])
+        for (const char in yellow) yellow[char].forEach((idx) => words = words.filter(word => word.charAt(idx) != char && word.includes(char)));
+        for (const idx in green) words = words.filter(word => word.charAt(idx) == green[idx])
         return words.length;
     },
 
@@ -137,9 +136,8 @@ module.exports = {
         this.WORDS = fs.readFileSync("test_data/wordle.txt", "utf-8").split("\n");
         this.CAL_WORDLE_SET = (words, green, yellow, gray) => {
             gray.forEach((char) => words = words.filter(word => !word.includes(char)));
-            for (char in yellow) yellow[char].forEach((idx) => words = words.filter(word => word.charAt(idx) != char && word.includes(char)));
-            for (let i = 0; i < 5; i++)
-                if (green[i]) words = words.filter(word => word.charAt(i) == green[i])
+            for (const char in yellow) yellow[char].forEach((idx) => words = words.filter(word => word.charAt(idx) != char && word.includes(char)));
+            for (const idx in green) words = words.filter(word => word.charAt(idx) == green[idx])
             return words;
         }
         let updated_config = word_scores = {};
@@ -153,14 +151,11 @@ module.exports = {
                     for (const letter_idx in first_set[target_word_idx]) { // loop througgh every letter of the target word
                         const current_letter = first_set[target_word_idx][letter_idx],
                             other_word = first_set[other_word_idx];
-                        if (current_letter == other_word[letter_idx]) { // check hypothetical correct letter
-                            updated_config.green[letter_idx.toString()] = current_letter;
-                        } else if (other_word.includes(current_letter)) { // check hypothetical included letter
+                        if (current_letter == other_word[letter_idx]) updated_config.green[letter_idx.toString()] = current_letter; // check hypothetical correct letter
+                        else if (other_word.includes(current_letter)) { // check hypothetical included letter
                             if (updated_config.yellow[current_letter]) updated_config.yellow[current_letter].add(Number(letter_idx));
                             else updated_config.yellow[current_letter] = new Set([Number(letter_idx)]);
-                        } else if (!other_word.includes(current_letter)) { // check hypothetical non-exist letter
-                            updated_config.gray.add(current_letter);
-                        }
+                        } else if (!other_word.includes(current_letter)) updated_config.gray.add(current_letter); // check hypothetical non-exist letter
                     }
                     let second_set = this.CAL_WORDLE_SET(first_set, updated_config.green, updated_config.yellow, updated_config.gray);
                     scores += second_set.length;
