@@ -25,29 +25,40 @@ from c22075165 import *
 
 
 
-green_1 = {1:'i',3:'c'}
-yellow_1 = {'e':{3}}
-gray_1 = {'r','a','s','d','f'}
-green_2 = {2:'a'}
-yellow_2 = {'a':{3},'i':{2},'l':{3,4},'r':{1}}
-gray_2={'e','t','u','o','p','g','h','c','m','s'}
-green_3 = {}
-yellow_3 = {'r':{1},'i':{2},'l':{3}}
-gray_3 = {'g','o','u','p','c','h'}
-green_4 = {4:'r'}
-yellow_4 = {'r':{1},'i':{1,2},'l':{0,3}}
-gray_4 = {'g','o','u','p','c','h','t','e'}
-exercise9_list = [((green_1,yellow_1,gray_1),5),
-				  ((green_2,yellow_2,gray_2),3),
-				  ((green_3,yellow_3,gray_3),38),
-				  ((green_4,yellow_4,gray_4),1)]
-exercise10_list = [((green_1,yellow_1,gray_1), {'wince', 'yince', 'mince'}),
-				  ((green_2,yellow_2,gray_2),{'laari', 'liard'}),
-				  ((green_3,yellow_3,gray_3),{'liter'}),
-				  ((green_4,yellow_4,gray_4),{'flair'})]
+# green_1 = {1:'i',3:'c'}
+# yellow_1 = {'e':{3}}
+# gray_1 = {'r','a','s','d','f'}
+# green_2 = {2:'a'}
+# yellow_2 = {'a':{3},'i':{2},'l':{3,4},'r':{1}}
+# gray_2={'e','t','u','o','p','g','h','c','m','s'}
+# green_3 = {}
+# yellow_3 = {'r':{1},'i':{2},'l':{3}}
+# gray_3 = {'g','o','u','p','c','h'}
+# green_4 = {4:'r'}
+# yellow_4 = {'r':{1},'i':{1,2},'l':{0,3}}
+# gray_4 = {'g','o','u','p','c','h','t','e'}
+# exercise9_list = [((green_1,yellow_1,gray_1),5),
+# 				  ((green_2,yellow_2,gray_2),3),
+# 				  ((green_3,yellow_3,gray_3),38),
+# 				  ((green_4,yellow_4,gray_4),1)]
+# exercise10_list = [((green_1,yellow_1,gray_1), {'wince', 'yince', 'mince'}),
+# 				  ((green_2,yellow_2,gray_2),{'laari', 'liard'}),
+# 				  ((green_3,yellow_3,gray_3),{'liter'}),
+# 				  ((green_4,yellow_4,gray_4),{'flair'})]
 
                   
-print(exercise10(green_2, yellow_2, gray_2))
+# print(exercise10(green_2, yellow_2, gray_2))
+
+# exercise7_list = [((3,2),True),
+# 				  ((5,2),False),
+# 				  ((0.3,3),True),
+# 				  ((1.15,2),False)]
+
+# print(exercise7(0.3,3))
+# print(exercise7(1.15,2))
+
+
+print(exercise7(5, 300))
 
 # 1714
 # 615
